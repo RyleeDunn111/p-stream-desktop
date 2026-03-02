@@ -21,9 +21,7 @@ const warpProxy = require('./warp-proxy');
 const downloadManager = require('./download-manager');
 
 // Register custom protocol scheme before app is ready (required for streaming/range requests)
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'pstream', privileges: { stream: true, supportFetchAPI: true } },
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'pstream', privileges: { stream: true, supportFetchAPI: true } }]);
 
 // Paths relative to src/main/ (__dirname)
 const ROOT = path.join(__dirname, '..', '..');
