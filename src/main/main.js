@@ -758,9 +758,10 @@ function createWindow() {
     const script = `
       (function() {
         if (window.__pstreamSubtitleFixInjected) return;
-        window.__pstreamSubtitleFixInjected = true;
 
         // --- CSS: ensure native WebVTT text-track containers are always visible ---
+        // Use documentElement as a fallback in case <head> doesn't exist yet
+        // (did-navigate can fire before the DOM is fully parsed).
         const style = document.createElement('style');
         style.textContent = \`
           video::-webkit-media-text-track-container,
@@ -772,7 +773,11 @@ function createWindow() {
             overflow: visible !important;
           }
         \`;
-        document.head.appendChild(style);
+        (document.head || document.documentElement).appendChild(style);
+
+        // Set the guard only after the style is safely inserted so a failed early
+        // injection doesn't permanently block a later retry.
+        window.__pstreamSubtitleFixInjected = true;
 
         // --- JS: move custom subtitle overlays inside the fullscreen element ---
         // Selectors covering common open-source and commercial video players.
@@ -865,8 +870,8 @@ function createWindow() {
   view.webContents.on('did-navigate', () => {
     setTimeout(injectMediaWatcher, 1000);
     setTimeout(injectDevToolsShortcut, 100);
-    // No delay — the script is idempotent and must run before any fullscreenchange fires.
-    injectSubtitleFullscreenFix();
+    // Small delay so the DOM (including <head>) is available before the style injection.
+    setTimeout(injectSubtitleFullscreenFix, 200);
   });
 
   // Update title when page title changes
