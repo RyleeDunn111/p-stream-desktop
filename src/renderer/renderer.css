@@ -146,3 +146,23 @@ body[data-platform='darwin'] .app-icon {
 body[data-platform='darwin'] .titlebar {
   padding-left: 80px; /* Make room for native traffic lights */
 }
+
+/* --- Kiosk / Fullscreen Overrides --- */
+
+/* Completely hide the titlebar when in fullscreen */
+body[data-fullscreen='true'] .titlebar {
+  display: none !important;
+}
+
+/* Ensure the main container takes up every single pixel */
+body[data-fullscreen='true'] {
+  overflow: hidden;
+}
+
+/* If you have a container div for your BrowserView, 
+   ensure it has no top margin/padding now that the titlebar is gone */
+body[data-fullscreen='true'] #main-container {
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}

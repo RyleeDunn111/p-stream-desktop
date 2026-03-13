@@ -111,12 +111,15 @@ window.windowControls.onThemeColorChanged((color) => {
 });
 
 // Hide/show titlebar based on fullscreen state
+// Hide/show titlebar based on fullscreen state
 window.windowControls.onFullscreenChanged((isFullscreen) => {
+  // 1. Force the CSS attribute onto the body (This triggers your display: none rule)
+  document.body.setAttribute('data-fullscreen', isFullscreen ? 'true' : 'false');
+
+  // 2. JS Fallback to hide the element directly
   if (titlebar) {
-    if (isFullscreen) {
-      titlebar.style.display = 'none';
-    } else {
-      titlebar.style.display = '';
-    }
+    titlebar.style.display = isFullscreen ? 'none' : 'flex';
   }
+  
+  console.log("Fullscreen state changed to:", isFullscreen);
 });

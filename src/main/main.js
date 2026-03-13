@@ -123,6 +123,7 @@ function createWindow() {
     icon: iconPath,
     backgroundColor: '#1f2025',
     fullscreenable: true,
+    Fullscreen: app.commandLine.hasSwitch('kiosk'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -222,7 +223,7 @@ function createWindow() {
 
   const resizeView = () => {
     const { width, height } = mainWindow.getContentBounds();
-    const isFullscreen = mainWindow.isFullScreen();
+    const isFullscreen = mainWindow.isFullScreen() || app.commandLine.hasSwitch('kiosk');
     // In fullscreen, BrowserView should fill the entire window (titlebar is hidden)
     // Otherwise, start below the titlebar
     if (isFullscreen) {

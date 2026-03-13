@@ -83,6 +83,23 @@ contextBridge.exposeInMainWorld('__PSTREAM_RELOAD_STREAM_PAGE__', () => ipcRende
 window.addEventListener('pstream-desktop-settings', () => {
   ipcRenderer.send('open-settings');
 });
+
+// Expose window control APIs to the renderer
+contextBridge.exposeInMainWorld('windowControls', {
+  minimize: () => ipcRenderer.send('window-minimize'),
+  maximizeToggle: () => ipcRenderer.send('window-maximize-toggle'),
+  close: () => ipcRenderer.send('window-close'),
+  
+  // Listeners
+  onPlatformChanged: (callback) => ipcRenderer.on('platform-changed', (event, value) => callback(value)),
+  onTitleChanged: (callback) => ipcRenderer.on('title-changed', (event, value) => callback(value)),
+  onMaximizedChanged: (callback) => ipcRenderer.on('window-maximized', (event, value) => callback(value)),
+  onThemeColorChanged: (callback) => ipcRenderer.on('theme-color', (event, value) => callback(value)),
+  
+  // THIS IS THE ONE YOU NEED FOR FULLSCREEN/KIOSK
+  onFullscreenChanged: (callback) => ipcRenderer.on('window-fullscreen', (event, value) => callback(value)),
+});
+
 console.log('P-Stream Desktop Preload Loaded');
 
 let lastThemeColor = null;
